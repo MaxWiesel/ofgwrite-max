@@ -747,14 +747,14 @@ int umount_rootfs(int steps)
 	ret += mkdir("/newroot/var", 777);
 	ret += mkdir("/newroot/var/volatile", 777);
 
-#if 0
+/*
 	if (multilib)
 	{
 		ret += mkdir("/newroot/lib64", 777);
 		ret += mkdir("/newroot/usr/lib64", 777);
 		ret += mkdir("/newroot/usr/lib64/autofs", 777);
 	}
-#endif
+*/
 
 	// create maybe needed directory for image files mountpoint
 	char path[1000];
@@ -768,7 +768,12 @@ int umount_rootfs(int steps)
 	}
 
 	// we need init and libs to be able to exec init u later
-#if 0
+	ret =  system("cp -arf /bin/busybox*     /newroot/bin");
+	ret += system("cp -arf /bin/sh*          /newroot/bin");
+	ret += system("cp -arf /bin/bash*        /newroot/bin");
+	ret += system("cp -arf /sbin/init*       /newroot/sbin");
+
+/*
 	if (multilib)
 	{
 		ret =  system("cp -arf /bin/busybox*     /newroot/bin");
@@ -791,11 +796,7 @@ int umount_rootfs(int steps)
 		ret += system("cp -arf /lib/libtinfo*    /newroot/lib");
 		ret += system("cp -arf /lib/libdl*       /newroot/lib");
 	}
-#endif
-	ret =  system("cp -arf /bin/busybox*     /newroot/bin");
-	ret += system("cp -arf /bin/sh*          /newroot/bin");
-	ret += system("cp -arf /bin/bash*        /newroot/bin");
-	ret += system("cp -arf /sbin/init*       /newroot/sbin");
+*/
 
 	if (ret != 0)
 	{
@@ -803,7 +804,7 @@ int umount_rootfs(int steps)
 		return 0;
 	}
 
-#if 0
+/*
 	// libcrypt is moved from /lib to /usr/libX in new OE versions
 	if (multilib)
 	{
@@ -862,7 +863,9 @@ int umount_rootfs(int steps)
 		ret += system("cp -arf /etc/resolv*      /newroot/etc");
 	}
 
-	// Switch to user mode 1
+*/
+
+	// Switch to user mode 2
 	my_printf("Switching to user mode 2\n");
 	ret = system("init 2");
 	if (ret)
@@ -872,7 +875,6 @@ int umount_rootfs(int steps)
 		sleep(5);
 		return 0;
 	}
-#endif
 
 	// it can take several seconds until Neutrino is shut down
 	// wait because otherwise remounting read only is not possible
@@ -891,7 +893,7 @@ int umount_rootfs(int steps)
 	init_framebuffer(steps);
 	show_main_window(1, ofgwrite_version);
 	set_overall_text("Flashing image");
-	set_step_without_incr("Wait until Neutrino is stopped");
+	set_step_without_incr("Start flashing");
 	sleep(2);
 
 	ret = pivot_root("/newroot/", "oldroot");
@@ -954,7 +956,7 @@ int umount_rootfs(int steps)
 	ret = symlink("/bin/busybox", "/bin/mount");
 	ret += symlink("/bin/busybox", "/bin/umount");
 
-#if 0
+/*
 	// try to restart autofs
 	ret =  system("/bin/automount");
 	if (ret != 0)
@@ -962,10 +964,9 @@ int umount_rootfs(int steps)
 		my_printf("Error starting autofs\n");
 	}
 
+*/
 	// restart init process
 	ret = system("exec init u");
-#endif
-	ret = system("exec init");
 	sleep(3);
 
 	// kill all remaining open processes which prevent umounting rootfs
@@ -1143,49 +1144,50 @@ void find_kernel_rootfs_device()
 		my_printf("Using %s as kernel device\n", kernel_device);
 	}
 
-	if ((!strcmp(vumodel, "solo4k") && multiboot_partition) || (!strcmp(vumodel, "ultimo4k") && multiboot_partition) || (!strcmp(vumodel, "uno4k") && multiboot_partition) || (!strcmp(vumodel, "uno4kse") && multiboot_partition))
+	if (strcmp(vumodel, "") && multiboot_partition > 0)
 	{
-		if (multiboot_partition == 1)
-			strcpy(kernel_device, "/dev/mmcblk0p4");
-		else if (multiboot_partition == 2)
-			strcpy(kernel_device, "/dev/mmcblk0p6");
-		else if (multiboot_partition == 3)
-			strcpy(kernel_device, "/dev/mmcblk0p8");
-		else if (multiboot_partition == 4)
-			strcpy(kernel_device, "/dev/mmcblk0p10");
-		my_printf("Using %s as kernel device\n", kernel_device);
-		found_kernel_device = 1;
-		kernel_flash_mode = TARBZ2;
-	}
-
-	if (!strcmp(vumodel, "duo4k") && multiboot_partition)
-	{
-		if (multiboot_partition == 1)
-			strcpy(kernel_device, "/dev/mmcblk0p9");
-		else if (multiboot_partition == 2)
-			strcpy(kernel_device, "/dev/mmcblk0p11");
-		else if (multiboot_partition == 3)
-			strcpy(kernel_device, "/dev/mmcblk0p13");
-		else if (multiboot_partition == 4)
-			strcpy(kernel_device, "/dev/mmcblk0p15");
-		my_printf("Using %s as kernel device\n", kernel_device);
-		found_kernel_device = 1;
-		kernel_flash_mode = TARBZ2;
-	}
-
-	if (!strcmp(vumodel, "zero4k") && multiboot_partition)
-	{
-		if (multiboot_partition == 1)
-			strcpy(kernel_device, "/dev/mmcblk0p7");
-		else if (multiboot_partition == 2)
-			strcpy(kernel_device, "/dev/mmcblk0p9");
-		else if (multiboot_partition == 3)
-			strcpy(kernel_device, "/dev/mmcblk0p11");
-		else if (multiboot_partition == 4)
-			strcpy(kernel_device, "/dev/mmcblk0p13");
-		my_printf("Using %s as kernel device\n", kernel_device);
-		found_kernel_device = 1;
-		kernel_flash_mode = TARBZ2;
+		if (!strcmp(vumodel, "solo4k") || !strcmp(vumodel, "ultimo4k") || !strcmp(vumodel, "uno4k") || !strcmp(vumodel, "uno4kse"))
+		{
+			if (multiboot_partition == 1)
+				strcpy(kernel_device, "/dev/mmcblk0p4");
+			else if (multiboot_partition == 2)
+				strcpy(kernel_device, "/dev/mmcblk0p6");
+			else if (multiboot_partition == 3)
+				strcpy(kernel_device, "/dev/mmcblk0p8");
+			else if (multiboot_partition == 4)
+				strcpy(kernel_device, "/dev/mmcblk0p10");
+			my_printf("Forcing %s as kernel device\n", kernel_device);
+			found_kernel_device = 1;
+			kernel_flash_mode = TARBZ2;
+		}
+		else if (!strcmp(vumodel, "duo4k"))
+		{
+			if (multiboot_partition == 1)
+				strcpy(kernel_device, "/dev/mmcblk0p9");
+			else if (multiboot_partition == 2)
+				strcpy(kernel_device, "/dev/mmcblk0p11");
+			else if (multiboot_partition == 3)
+				strcpy(kernel_device, "/dev/mmcblk0p13");
+			else if (multiboot_partition == 4)
+				strcpy(kernel_device, "/dev/mmcblk0p15");
+			my_printf("Forcing %s as kernel device\n", kernel_device);
+			found_kernel_device = 1;
+			kernel_flash_mode = TARBZ2;
+		}
+		else if (!strcmp(vumodel, "zero4k"))
+		{
+			if (multiboot_partition == 1)
+				strcpy(kernel_device, "/dev/mmcblk0p7");
+			else if (multiboot_partition == 2)
+				strcpy(kernel_device, "/dev/mmcblk0p9");
+			else if (multiboot_partition == 3)
+				strcpy(kernel_device, "/dev/mmcblk0p11");
+			else if (multiboot_partition == 4)
+				strcpy(kernel_device, "/dev/mmcblk0p13");
+			my_printf("Forcing %s as kernel device\n", kernel_device);
+			found_kernel_device = 1;
+			kernel_flash_mode = TARBZ2;
+		}
 	}
 
 	if (user_rootfs)
@@ -1207,49 +1209,50 @@ void find_kernel_rootfs_device()
 		}
 	}
 
-	if ((!strcmp(vumodel, "solo4k") && multiboot_partition) || (!strcmp(vumodel, "ultimo4k") && multiboot_partition) || (!strcmp(vumodel, "uno4k") && multiboot_partition) || (!strcmp(vumodel, "uno4kse") && multiboot_partition))
+	if (strcmp(vumodel, "") && multiboot_partition > 0)
 	{
-		if (multiboot_partition == 1)
-			strcpy(rootfs_device, "/dev/mmcblk0p5");
-		else if (multiboot_partition == 2)
-			strcpy(rootfs_device, "/dev/mmcblk0p7");
-		else if (multiboot_partition == 3)
-			strcpy(rootfs_device, "/dev/mmcblk0p9");
-		else if (multiboot_partition == 4)
-			strcpy(rootfs_device, "/dev/mmcblk0p11");
-		my_printf("Using %s as rootfs device\n", rootfs_device);
-		found_rootfs_device = 1;
-		rootfs_flash_mode = TARBZ2;
-	}
-
-	if (!strcmp(vumodel, "duo4k") && multiboot_partition)
-	{
-		if (multiboot_partition == 1)
-			strcpy(rootfs_device, "/dev/mmcblk0p10");
-		else if (multiboot_partition == 2)
-			strcpy(rootfs_device, "/dev/mmcblk0p12");
-		else if (multiboot_partition == 3)
-			strcpy(rootfs_device, "/dev/mmcblk0p14");
-		else if (multiboot_partition == 4)
-			strcpy(rootfs_device, "/dev/mmcblk0p16");
-		my_printf("Using %s as rootfs device\n", rootfs_device);
-		found_rootfs_device = 1;
-		rootfs_flash_mode = TARBZ2;
-	}
-
-	if (!strcmp(vumodel, "zero4k") && multiboot_partition)
-	{
-		if (multiboot_partition == 1)
-			strcpy(rootfs_device, "/dev/mmcblk0p8");
-		else if (multiboot_partition == 2)
-			strcpy(rootfs_device, "/dev/mmcblk0p10");
-		else if (multiboot_partition == 3)
-			strcpy(rootfs_device, "/dev/mmcblk0p12");
-		else if (multiboot_partition == 4)
-			strcpy(rootfs_device, "/dev/mmcblk0p14");
-		my_printf("Using %s as rootfs device\n", rootfs_device);
-		found_rootfs_device = 1;
-		rootfs_flash_mode = TARBZ2;
+		if (!strcmp(vumodel, "solo4k") || !strcmp(vumodel, "ultimo4k") || !strcmp(vumodel, "uno4k") || !strcmp(vumodel, "uno4kse"))
+		{
+			if (multiboot_partition == 1)
+				strcpy(rootfs_device, "/dev/mmcblk0p5");
+			else if (multiboot_partition == 2)
+				strcpy(rootfs_device, "/dev/mmcblk0p7");
+			else if (multiboot_partition == 3)
+				strcpy(rootfs_device, "/dev/mmcblk0p9");
+			else if (multiboot_partition == 4)
+				strcpy(rootfs_device, "/dev/mmcblk0p11");
+			my_printf("Forcing %s as rootfs device\n", rootfs_device);
+			found_rootfs_device = 1;
+			rootfs_flash_mode = TARBZ2;
+		}
+		else if (!strcmp(vumodel, "duo4k"))
+		{
+			if (multiboot_partition == 1)
+				strcpy(rootfs_device, "/dev/mmcblk0p10");
+			else if (multiboot_partition == 2)
+				strcpy(rootfs_device, "/dev/mmcblk0p12");
+			else if (multiboot_partition == 3)
+				strcpy(rootfs_device, "/dev/mmcblk0p14");
+			else if (multiboot_partition == 4)
+				strcpy(rootfs_device, "/dev/mmcblk0p16");
+			my_printf("Forcing %s as rootfs device\n", rootfs_device);
+			found_rootfs_device = 1;
+			rootfs_flash_mode = TARBZ2;
+		}
+		else if (!strcmp(vumodel, "zero4k"))
+		{
+			if (multiboot_partition == 1)
+				strcpy(rootfs_device, "/dev/mmcblk0p8");
+			else if (multiboot_partition == 2)
+				strcpy(rootfs_device, "/dev/mmcblk0p10");
+			else if (multiboot_partition == 3)
+				strcpy(rootfs_device, "/dev/mmcblk0p12");
+			else if (multiboot_partition == 4)
+				strcpy(rootfs_device, "/dev/mmcblk0p14");
+			my_printf("Forcing %s as rootfs device\n", rootfs_device);
+			found_rootfs_device = 1;
+			rootfs_flash_mode = TARBZ2;
+		}
 	}
 
 	if  (((current_rootfs_sub_dir[0] == '\0' && strcmp(rootfs_device, current_rootfs_device) != 0) ||
@@ -1335,6 +1338,7 @@ int main(int argc, char *argv[])
 	exit(EXIT_FAILURE);
 #endif
 
+	strcpy(vumodel, "");
 	FILE *fvu = fopen("/proc/stb/info/vumodel", "r");
 	if (fvu) {
 		char tmp[63];
@@ -1348,7 +1352,7 @@ int main(int argc, char *argv[])
 	openlog("ofgwrite", LOG_CONS | LOG_NDELAY, LOG_USER);
 
 	my_printf("\nofgwrite Utility v%s NMP-Edition\n", ofgwrite_version);
-	if (fvu)
+	if (strcmp(vumodel, ""))
 		my_printf("Found vuplus stb: %s\n", vumodel);
 	my_printf("Author: Betacentauri\n");
 	my_printf("Based upon: mtd-utils-native-1.5.1 and busybox 1.24.1\n");
@@ -1462,11 +1466,11 @@ int main(int argc, char *argv[])
 		// kill nmbd, smbd, rpc.mountd and rpc.statd -> otherwise remounting root read-only is not possible
 		if (!no_write && stop_neutrino_needed)
 		{
+/*
 			ret = system("killall nmbd");
 			ret = system("killall smbd");
 			ret = system("killall rpc.mountd");
 			ret = system("killall rpc.statd");
-#if 0
 			ret = system("/etc/init.d/softcam stop");
 			ret = system("killall CCcam");
 			ret = system("pkill -9 -f '[Oo][Ss][Cc][Aa][Mm]'");
@@ -1484,9 +1488,11 @@ int main(int argc, char *argv[])
 			// kill VMC
 			ret = system("pkill -f vmc.sh");
 			ret = system("pkill -f DBServer.py");
+*/
+			// stop samba
+			ret = system("/etc/init.d/samba stop");
 			// stop autofs
 			ret = system("/etc/init.d/autofs stop");
-#endif
 			// ignore return values, because the processes might not run
 		}
 

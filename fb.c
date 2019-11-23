@@ -561,7 +561,7 @@ int loadBackgroundImage()
 	int ret;
 
 	// search for background image
-#if 0
+/*
 	if (access("/etc/enigma2/bootlogo.mvi", R_OK) != 0)
 		if (access("/etc/enigma2/backdrop.mvi", R_OK) != 0)
 			if (access("/usr/share/bootlogo.mvi", R_OK) != 0)
@@ -575,7 +575,7 @@ int loadBackgroundImage()
 			ret = system("/usr/bin/showiframe /etc/enigma2/backdrop.mvi");
 	else
 		ret = system("/usr/bin/showiframe /etc/enigma2/bootlogo.mvi");
-#endif
+*/
 
 	if (ret != 0)
 		return 0;
