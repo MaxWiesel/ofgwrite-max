@@ -1607,7 +1607,10 @@ int main(int argc, char *argv[])
 			set_step("Successfully flashed!");
 		}
 		else
+		{
+			ret = umount("/oldroot_remount/");
 			set_step("Successfully flashed!");
+		}
 		fflush(stdout);
 		fflush(stderr);
 		sleep(3);
