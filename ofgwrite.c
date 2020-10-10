@@ -139,12 +139,12 @@ int find_image_files(char* p)
 		if (entry)
 		{
 			if ((strstr(entry->d_name, "kernel") != NULL
-			  && strstr(entry->d_name, ".bin")   != NULL)			// ET-xx00, XP1000, VU boxes, DAGS boxes
+			  && strstr(entry->d_name, ".bin")   != NULL)	// ET-xx00, XP1000, VU boxes, DAGS boxes
 			 || strcmp(entry->d_name, "uImage") == 0			// Spark boxes
-			 || (strcmp(entry->d_name, "kernel1_auto.bin") == 0 && (!strcmp(vumodel, "solo4k") || !strcmp(vumodel, "duo4k") || !strcmp(vumodel, "ultimo4k") || !strcmp(vumodel, "uno4k") || !strcmp(vumodel, "uno4kse") || !strcmp(vumodel, "zero4k")) && multiboot_partition == 1)		// vusolo4k/vuduo4k/vuultimo4k/vuuno4k/vuuno4kse/vuzero4k multiboot
-			 || (strcmp(entry->d_name, "kernel2_auto.bin") == 0 && (!strcmp(vumodel, "solo4k") || !strcmp(vumodel, "duo4k") || !strcmp(vumodel, "ultimo4k") || !strcmp(vumodel, "uno4k") || !strcmp(vumodel, "uno4kse") || !strcmp(vumodel, "zero4k")) && multiboot_partition == 2)		// vusolo4k/vuduo4k/vuultimo4k/vuuno4k/vuuno4kse/vuzero4k multiboot
-			 || (strcmp(entry->d_name, "kernel3_auto.bin") == 0 && (!strcmp(vumodel, "solo4k") || !strcmp(vumodel, "duo4k") || !strcmp(vumodel, "ultimo4k") || !strcmp(vumodel, "uno4k") || !strcmp(vumodel, "uno4kse") || !strcmp(vumodel, "zero4k")) && multiboot_partition == 3)		// vusolo4k/vuduo4k/vuultimo4k/vuuno4k/vuuno4kse/vuzero4k multiboot
-			 || (strcmp(entry->d_name, "kernel4_auto.bin") == 0 && (!strcmp(vumodel, "solo4k") || !strcmp(vumodel, "duo4k") || !strcmp(vumodel, "ultimo4k") || !strcmp(vumodel, "uno4k") || !strcmp(vumodel, "uno4kse") || !strcmp(vumodel, "zero4k")) && multiboot_partition == 4))	// vusolo4k/vuduo4k/vuultimo4k/vuuno4k/vuuno4kse/vuzero4k multiboot
+			 || (strcmp(entry->d_name, "kernel1_auto.bin") == 0 && (!strcmp(vumodel, "solo4k") || !strcmp(vumodel, "duo4k") || !strcmp(vumodel, "duo4kse") || !strcmp(vumodel, "ultimo4k") || !strcmp(vumodel, "uno4k") || !strcmp(vumodel, "uno4kse") || !strcmp(vumodel, "zero4k")) && multiboot_partition == 1)		// vusolo4k/vuduo4k/vuduo4kse/vuultimo4k/vuuno4k/vuuno4kse/vuzero4k multiboot
+			 || (strcmp(entry->d_name, "kernel2_auto.bin") == 0 && (!strcmp(vumodel, "solo4k") || !strcmp(vumodel, "duo4k") || !strcmp(vumodel, "duo4kse") || !strcmp(vumodel, "ultimo4k") || !strcmp(vumodel, "uno4k") || !strcmp(vumodel, "uno4kse") || !strcmp(vumodel, "zero4k")) && multiboot_partition == 2)		// vusolo4k/vuduo4k/vuduo4kse/vuultimo4k/vuuno4k/vuuno4kse/vuzero4k multiboot
+			 || (strcmp(entry->d_name, "kernel3_auto.bin") == 0 && (!strcmp(vumodel, "solo4k") || !strcmp(vumodel, "duo4k") || !strcmp(vumodel, "duo4kse") || !strcmp(vumodel, "ultimo4k") || !strcmp(vumodel, "uno4k") || !strcmp(vumodel, "uno4kse") || !strcmp(vumodel, "zero4k")) && multiboot_partition == 3)		// vusolo4k/vuduo4k/vuduo4kse/vuultimo4k/vuuno4k/vuuno4kse/vuzero4k multiboot
+			 || (strcmp(entry->d_name, "kernel4_auto.bin") == 0 && (!strcmp(vumodel, "solo4k") || !strcmp(vumodel, "duo4k") || !strcmp(vumodel, "duo4kse") || !strcmp(vumodel, "ultimo4k") || !strcmp(vumodel, "uno4k") || !strcmp(vumodel, "uno4kse") || !strcmp(vumodel, "zero4k")) && multiboot_partition == 4))		// vusolo4k/vuduo4k/vuduo4kse/vuultimo4k/vuuno4k/vuuno4kse/vuzero4k multiboot
 			{
 				strcpy(kernel_filename, path);
 				strcpy(&kernel_filename[strlen(path)], entry->d_name);
@@ -158,10 +158,10 @@ int find_image_files(char* p)
 			 || strcmp(entry->d_name, "e2jffs2.img") == 0			// Spark boxes
 			 || strcmp(entry->d_name, "rootfs.tar.bz2") == 0		// vusolo4k/vuduo4k/vuuno4k/vuuno4kse/vuultimo4k/vuzero4k/hd51
 			 || strcmp(entry->d_name, "rootfs.ubi") == 0			// Zgemma H9
-			 || (strcmp(entry->d_name, "rootfs1.tar.bz2") == 0 && (!strcmp(vumodel, "solo4k") || !strcmp(vumodel, "duo4k") || !strcmp(vumodel, "ultimo4k") || !strcmp(vumodel, "uno4k") || !strcmp(vumodel, "uno4kse") || !strcmp(vumodel, "zero4k")) && multiboot_partition == 1)	// vusolo4k/vuduo4k/vuultimo4k/vuuno4k/vuuno4kse/vuzero4k multiboot
-			 || (strcmp(entry->d_name, "rootfs2.tar.bz2") == 0 && (!strcmp(vumodel, "solo4k") || !strcmp(vumodel, "duo4k") || !strcmp(vumodel, "ultimo4k") || !strcmp(vumodel, "uno4k") || !strcmp(vumodel, "uno4kse") || !strcmp(vumodel, "zero4k")) && multiboot_partition == 2)	// vusolo4k/vuduo4k/vuultimo4k/vuuno4k/vuuno4kse/vuzero4k multiboot
-			 || (strcmp(entry->d_name, "rootfs3.tar.bz2") == 0 && (!strcmp(vumodel, "solo4k") || !strcmp(vumodel, "duo4k") || !strcmp(vumodel, "ultimo4k") || !strcmp(vumodel, "uno4k") || !strcmp(vumodel, "uno4kse") || !strcmp(vumodel, "zero4k")) && multiboot_partition == 3)	// vusolo4k/vuduo4k/vuultimo4k/vuuno4k/vuuno4kse/vuzero4k multiboot
-			 || (strcmp(entry->d_name, "rootfs4.tar.bz2") == 0 && (!strcmp(vumodel, "solo4k") || !strcmp(vumodel, "duo4k") || !strcmp(vumodel, "ultimo4k") || !strcmp(vumodel, "uno4k") || !strcmp(vumodel, "uno4kse") || !strcmp(vumodel, "zero4k")) && multiboot_partition == 4))	// vusolo4k/vuduo4k/vuultimo4k/vuuno4k/vuuno4kse/vuzero4k multiboot
+			 || (strcmp(entry->d_name, "rootfs1.tar.bz2") == 0 && (!strcmp(vumodel, "solo4k") || !strcmp(vumodel, "duo4k") || !strcmp(vumodel, "duo4kse") || !strcmp(vumodel, "ultimo4k") || !strcmp(vumodel, "uno4k") || !strcmp(vumodel, "uno4kse") || !strcmp(vumodel, "zero4k")) && multiboot_partition == 1)	// vusolo4k/vuduo4k/vuduo4kse/vuultimo4k/vuuno4k/vuuno4kse/vuzero4k multiboot
+			 || (strcmp(entry->d_name, "rootfs2.tar.bz2") == 0 && (!strcmp(vumodel, "solo4k") || !strcmp(vumodel, "duo4k") || !strcmp(vumodel, "duo4kse") || !strcmp(vumodel, "ultimo4k") || !strcmp(vumodel, "uno4k") || !strcmp(vumodel, "uno4kse") || !strcmp(vumodel, "zero4k")) && multiboot_partition == 2)	// vusolo4k/vuduo4k/vuduo4kse/vuultimo4k/vuuno4k/vuuno4kse/vuzero4k multiboot
+			 || (strcmp(entry->d_name, "rootfs3.tar.bz2") == 0 && (!strcmp(vumodel, "solo4k") || !strcmp(vumodel, "duo4k") || !strcmp(vumodel, "duo4kse") || !strcmp(vumodel, "ultimo4k") || !strcmp(vumodel, "uno4k") || !strcmp(vumodel, "uno4kse") || !strcmp(vumodel, "zero4k")) && multiboot_partition == 3)	// vusolo4k/vuduo4k/vuduo4kse/vuultimo4k/vuuno4k/vuuno4kse/vuzero4k multiboot
+			 || (strcmp(entry->d_name, "rootfs4.tar.bz2") == 0 && (!strcmp(vumodel, "solo4k") || !strcmp(vumodel, "duo4k") || !strcmp(vumodel, "duo4kse") || !strcmp(vumodel, "ultimo4k") || !strcmp(vumodel, "uno4k") || !strcmp(vumodel, "uno4kse") || !strcmp(vumodel, "zero4k")) && multiboot_partition == 4))	// vusolo4k/vuduo4k/vuduo4kse/vuultimo4k/vuuno4k/vuuno4kse/vuzero4k multiboot
 			{
 				strcpy(rootfs_filename, path);
 				strcpy(&rootfs_filename[strlen(path)], entry->d_name);
@@ -1187,7 +1187,7 @@ void find_kernel_rootfs_device()
 			found_kernel_device = 1;
 			kernel_flash_mode = TARBZ2;
 		}
-		else if (!strcmp(vumodel, "duo4k"))
+		else if (!strcmp(vumodel, "duo4k") || !strcmp(vumodel, "duo4kse"))
 		{
 			if (multiboot_partition == 1)
 				strcpy(kernel_device, "/dev/mmcblk0p9");
@@ -1252,7 +1252,7 @@ void find_kernel_rootfs_device()
 			found_rootfs_device = 1;
 			rootfs_flash_mode = TARBZ2;
 		}
-		else if (!strcmp(vumodel, "duo4k"))
+		else if (!strcmp(vumodel, "duo4k") || !strcmp(vumodel, "duo4kse"))
 		{
 			if (multiboot_partition == 1)
 				strcpy(rootfs_device, "/dev/mmcblk0p10");
