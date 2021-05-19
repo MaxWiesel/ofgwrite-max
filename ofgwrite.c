@@ -769,7 +769,6 @@ int umount_rootfs(int steps)
 	ret += mkdir("/newroot/run", 777);
 	ret += mkdir("/newroot/sbin", 777);
 	ret += mkdir("/newroot/sys", 777);
-	ret += mkdir("/newroot/tmp", 777);
 	ret += mkdir("/newroot/usr", 777);
 	ret += mkdir("/newroot/usr/lib", 777);
 	ret += mkdir("/newroot/usr/lib/autofs", 777);
@@ -941,7 +940,6 @@ int umount_rootfs(int steps)
 	ret += mount("/oldroot/proc/", "proc/", NULL, MS_MOVE, NULL);
 	ret += mount("/oldroot/sys/", "sys/", NULL, MS_MOVE, NULL);
 	ret += mount("/oldroot/mnt/", "mnt/", NULL, MS_MOVE, NULL);
-	ret += mount("/oldroot/tmp/", "tmp/", NULL, MS_MOVE, NULL);
 	ret += mount("/oldroot/var/volatile", "var/volatile/", NULL, MS_MOVE, NULL);
 	// create link for tmp
 	ret += symlink("/var/volatile/tmp", "/tmp");
