@@ -33,7 +33,6 @@
 #include <sys/stat.h>
 #include <sys/ioctl.h>
 #include <mtd/mtd-user.h>
-#include <sys/sysmacros.h>
 
 #include "libmtd.h"
 #include "libmtd_int.h"
