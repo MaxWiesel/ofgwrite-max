@@ -41,7 +41,7 @@ enum FlashModeTypeEnum rootfs_flash_mode;
 int flash_kernel  = 0;
 int flash_rootfs  = 0;
 int no_write      = 0;
-int force_e2_stop = 0;
+int force_neutrino_stop = 0;
 int quiet         = 0;
 int show_help     = 0;
 int newroot_mounted = 0;
@@ -254,7 +254,7 @@ int read_args(int argc, char *argv[])
 				no_write = 1;
 				break;
 			case 'f':
-				force_e2_stop = 1;
+				force_neutrino_stop = 1;
 				break;
 			case 'q':
 				quiet = 1;
@@ -1308,7 +1308,7 @@ void find_kernel_rootfs_device()
 
 	if  (((current_rootfs_sub_dir[0] == '\0' && strcmp(rootfs_device, current_rootfs_device) != 0 && rootfs_flash_mode != MTD) ||
 		  ( current_rootfs_sub_dir[0] != '\0' && strcmp(current_rootfs_sub_dir, rootfs_sub_dir) != 0 )
-		 ) && !force_e2_stop
+		 ) && !force_neutrino_stop
 		)
 	{
 		stop_neutrino_needed = 0;
